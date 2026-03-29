@@ -1,20 +1,16 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 
-import 'package:tpc1/main.dart';
+import 'package:tpc1/main.dart' as app;
 
 void main() {
-  group('Acceptance Tests', () {
-    testWidgets('NavigationWidget acceptance test - navigates correctly', (WidgetTester tester) async {
-      // Build our app and trigger a frame.
-      await tester.pumpWidget(const MyApp());
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  group('E2E Acceptance Tests', () {
+    testWidgets('NavigationWidget E2E test - navigates correctly', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
 
       // Verify that the second page text is not on the screen.
       expect(find.text('not original page'), findsNothing);
@@ -27,9 +23,9 @@ void main() {
       expect(find.text('not original page'), findsOneWidget);
     });
 
-    testWidgets('ToggleWidget acceptance test - toggles status correctly', (WidgetTester tester) async {
-      // Build our app and trigger a frame.
-      await tester.pumpWidget(const MyApp());
+    testWidgets('ToggleWidget E2E test - toggles status correctly', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
 
       // Verify that the initial status is OFF.
       expect(find.text('Status: OFF'), findsOneWidget);
@@ -37,7 +33,7 @@ void main() {
 
       // Tap the toggle switch.
       await tester.tap(find.byKey(const Key('toggle_switch')));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       // Verify that the status changed to ON.
       expect(find.text('Status: OFF'), findsNothing);
@@ -45,16 +41,16 @@ void main() {
       
       // Tap the toggle switch again.
       await tester.tap(find.byKey(const Key('toggle_switch')));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       // Verify that the status changed back to OFF.
       expect(find.text('Status: OFF'), findsOneWidget);
       expect(find.text('Status: ON'), findsNothing);
     });
 
-    testWidgets('InputEchoWidget acceptance test - echoes text correctly', (WidgetTester tester) async {
-      // Build our app and trigger a frame.
-      await tester.pumpWidget(const MyApp());
+    testWidgets('InputEchoWidget E2E test - echoes text correctly', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
 
       // Verify that the initial echo text is empty.
       expect(find.text('Echo: '), findsOneWidget);

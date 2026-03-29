@@ -38,48 +38,105 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Hello, my name is Isaac Santos'),
-            SizedBox(height: 40),
-            CounterWidget(),
-            SizedBox(height: 40),
-            ToggleWidget(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Hello, my name is Isaac Santos'),
+              SizedBox(height: 40),
+              NavigationWidget(),
+              SizedBox(height: 40),
+              ToggleWidget(),
+              SizedBox(height: 40),
+              InputEchoWidget(),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class CounterWidget extends StatefulWidget {
-  const CounterWidget({super.key});
+class NavigationWidget extends StatelessWidget {
+  const NavigationWidget({super.key});
 
   @override
-  State<CounterWidget> createState() => _CounterWidgetState();
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text('Navigation Widget', style: TextStyle(fontWeight: FontWeight.bold)),
+        ElevatedButton(
+          key: const Key('navigation_button'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SecondPage()),
+            );
+          },
+          child: const Text('Go to next page'),
+        ),
+      ],
+    );
+  }
 }
 
-class _CounterWidgetState extends State<CounterWidget> {
-  int _counter = 0;
+class SecondPage extends StatelessWidget {
+  const SecondPage({super.key});
 
-  void _incrementCounter() {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Second Page')),
+      body: const Center(
+        child: Text('not original page'),
+      ),
+    );
+  }
+}
+
+class InputEchoWidget extends StatefulWidget {
+  const InputEchoWidget({super.key});
+
+  @override
+  State<InputEchoWidget> createState() => _InputEchoWidgetState();
+}
+
+class _InputEchoWidgetState extends State<InputEchoWidget> {
+  final TextEditingController _controller = TextEditingController();
+  String _echoText = '';
+
+  void _submit() {
     setState(() {
-      _counter++;
+      _echoText = _controller.text;
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text('Counter Widget', style: TextStyle(fontWeight: FontWeight.bold)),
-        Text('Value: $_counter'),
-        ElevatedButton(
-          key: const Key('increment_button'),
-          onPressed: _incrementCounter,
-          child: const Text('Increment'),
+        const Text('Input Echo Widget', style: TextStyle(fontWeight: FontWeight.bold)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+          child: TextField(
+            key: const Key('echo_text_field'),
+            controller: _controller,
+            decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Enter text here'),
+          ),
         ),
+        ElevatedButton(
+          key: const Key('echo_submit_button'),
+          onPressed: _submit,
+          child: const Text('Submit'),
+        ),
+        const SizedBox(height: 8),
+        Text('Echo: $_echoText', key: const Key('echo_display_text')),
       ],
     );
   }
